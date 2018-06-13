@@ -1,9 +1,9 @@
 import { resolveCollision } from './collision'
-// collision Functions
+// Utility Functions
 function randomIntFromRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
-// end export collision fun
+
 function randomIndex(colors) {
     return Math.floor(Math.random() * colors.length)
 }
