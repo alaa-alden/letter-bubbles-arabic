@@ -1,5 +1,6 @@
 import {
-    canvasDraw, canvas
+    canvasDraw,
+    canvas
 } from '../config/canvas'
 import {
     distance,
@@ -7,11 +8,11 @@ import {
 } from '../function'
 
 class Letter {
-    constructor(id,velocity, x, y, radius, colorCircle, letter, xLetter, yLetter, colorLetter) {
+    constructor(id, velocity, x, y, radius, colorCircle, letter, xLetter, yLetter, colorLetter) {
         this.id = id
         this.x = x
         this.y = y
-        this.velocity =velocity
+        this.velocity = velocity
         this.radius = radius
         this.color = colorCircle
         this.mass = 1
@@ -23,25 +24,42 @@ class Letter {
         this.draw = this.draw.bind(this)
 
     }
-    update(Letters) {
-        this.draw()
+    update(Letters,index) {
+
+        // for collision
         for (let i = 0; i < Letters.length; i++) {
             if (this === Letters[i]) continue
             if (distance(this.x, this.y, Letters[i].x, Letters[i].y) - this.radius * 2 < 0)
                 resolveCollision(this, Letters[i])
         }
-        if (this.x - this.radius > canvas.width) {
-            Letters.splice(this.id, 1)
+        // if letter arrive to scanner left
+        if (this.x - this.radius < 0 || this.x - this.radius > canvas.width+10) {
+            /*let l = 0,
+                r = Letters.length,
+                mid
+            while (l <= r) {
+                mid = l + r >> 1
+                if (Letters[mid].id < this.id) l = mid + 1
+                else if (Letters[mid].id > this.id) r = mid - 1
+                else if (Letters[mid].id == this.id) {
+                    Letters.splice(mid, 1)
+                    console.log("when delete left/far right " + Letters.length)
+                }
+            }*/
+            Letters.splice(index, 1)
+            console.log("when delete left/far right " + Letters.length)
         }
         // this.velocity.x = -this.velocity.x
-        else {
-            if (this.y - this.radius <= 0 || this.y + this.radius >= canvas.height)
-                this.velocity.y = -this.velocity.y
-            this.x += this.velocity.x
-            this.y += this.velocity.y
-            this.xLetter += this.velocity.x
-            this.yLetter += this.velocity.y
-        }
+        else if (this.y - this.radius <= 0 || this.y + this.radius >= canvas.height)
+            this.velocity.y = -this.velocity.y
+        // change coordinate for circle center
+        this.x += this.velocity.x
+        this.y += this.velocity.y
+        // change coordinate for letter
+        this.xLetter += this.velocity.x
+        this.yLetter += this.velocity.y
+        this.draw()
+
     }
     draw() {
         canvasDraw.beginPath()

@@ -3,11 +3,39 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Canvas Template</title>
-	
+<style>
+	body {
+		margin: 0;
+ background-color: #1D2536
+	}
+
+	canvas {
+		padding: 0;
+		margin: 0;
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		z-index: 1;
+	}
+	/* img {
+		padding: 0;
+		margin: 0;
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		z-index: -1;
+	} */
+</style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" />
 </head>
 <body>
 	<canvas></canvas>
+<!-- <img src='https://s3.amazonaws.com/spoonflower/public/design_thumbnails/0125/7891/rrrrgownm9_mirror.png' /> -->
 	<script src="js/canvas.bundle.js"></script>
+	<!-- <script >
+ let img=document.querySelector('img')
+	img.width=innerWidth
+	img.height=innerHeight
+	</script> -->
 </body>
 </html>
