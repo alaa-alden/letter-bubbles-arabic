@@ -2,8 +2,8 @@
 const canvas = document.querySelector('canvas')
 const canvasDraw = canvas.getContext('2d')
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+canvas.width = 2*window.innerWidth/3
+canvas.height = 2*window.innerHeight/3
 export {
     canvas,
     canvasDraw
