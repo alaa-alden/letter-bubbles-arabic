@@ -31,16 +31,17 @@ let CounterError = 0,
 // check if key is same any letter on scaner for delete
 addEventListener('keydown', function (event) {
     // console.log(event)
+    let check=false
     for (let i in letters) {
         if (event.key == letters[i].letter) {
             // letters.splice(i, 1)
             //letters[i].show=false
             letters[i].colorCircle = '#F01A30'
             console.log('when delete >>> ' + letters.length)
-            return 0
+            check=true
         }
-        if (i == letters.length - 1) CounterError++
     }
+    if(check)CounterError++
 })
 // Implementation
 
