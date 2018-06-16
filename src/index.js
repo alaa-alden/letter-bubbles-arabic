@@ -65,8 +65,9 @@ function animate() {
             if (letter.show && letter.colorCircle == '#00A5FF') win = false
         })
         if (win) {
-            canvasDraw.font = '40px arial',
-            canvasDraw.textAlign = 'center',
+            canvasDraw.font = '40px arial'
+            canvasDraw.textAlign = 'center'
+        canvasDraw.fillStyle = 'black'
             canvasDraw.fillText('you have won in our Game', canvas.width / 2, canvas.height / 2)
             cancelAnimationFrame(step)
             return 0
@@ -74,8 +75,9 @@ function animate() {
     }
 
     if (CounterLeft == 5) { // check if five letters arrive to canvas's left wihtout catching them
-        canvasDraw.font = '40px arial',
-        canvasDraw.textAlign = 'center',
+        canvasDraw.font = '40px arial'
+        canvasDraw.textAlign = 'center'
+        canvasDraw.fillStyle = 'black'
         canvasDraw.fillText('good luck in the future', canvas.width / 2, canvas.height / 2)
         cancelAnimationFrame(step)
         clearInterval(createLetter)
