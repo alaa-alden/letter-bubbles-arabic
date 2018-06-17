@@ -1,7 +1,6 @@
 /* eslint no-console:0 */
 import {
     randomIntFromRange,
-    distance,
     randomIndex
 } from './function'
 import Letter from './class/letter'
@@ -28,8 +27,8 @@ var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimat
 // may we don't need this
 // update size when change size of window
 addEventListener('resize', () => {
-    canvas.width = 2 * innerWidth / 3
-    canvas.height = 2 * innerHeight / 3
+    canvas.width = document.getElementById('e3').offsetWidth
+    canvas.height = document.getElementById('e3').offsetHeight
     //init()
 })
 // check if key is same any letter on scaner for delete
@@ -67,7 +66,7 @@ function animate() {
         if (win) {
             canvasDraw.font = '40px arial'
             canvasDraw.textAlign = 'center'
-        canvasDraw.fillStyle = 'black'
+            canvasDraw.fillStyle = 'black'
             canvasDraw.fillText('you have won in our Game', canvas.width / 2, canvas.height / 2)
             cancelAnimationFrame(step)
             return 0
