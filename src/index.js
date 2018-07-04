@@ -10,127 +10,165 @@ import {
 } from './config/canvas'
 let
     chars = ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي', 'ا', 'إ', 'آ', 'ؤ', 'ئ', 'ء'],
-    idxy = [15, 8, 8, 8, 5, 5, 5, 10, 10, 5, 5, 5, 5, 5, 5, 10, 10, 5, 5, 10, 5, 13, 10, 5, 5, 5, 5, 5, 15, 15, 15, 5, 5, 10],
-    letters, numberletters = 0,
+    IY = [25, 15, 15, 15, 5, 5, 8, 15, 20, 8, 10, 12, 15, 10, 10, 20, 20, 8, 10, 20, 12, 18, 17, 5, 10, 15, 8, 8, 15, 15, 20, 8, 10, 10],
+    DX = [0, 3, 2, 2, -1, -1, -1, 3, 3, 5, 5, 2, 2, 2, 2, 0, 0, -2, -2, 3, 3, 3, 3, 2, 3, 0, 3, 0, 0, 0, 0, 2, 0, 0],
+    letters, Counterletters = 0,
     CounterError = 0,
     CounterLeft = 0,
-    speed = 5,
+    speed = 3,
     devspeed = 0.5,
-    MaxNumberLetter = 15,
+    MaxNumberLetter = 50,
     step,
-    win = true
+    win = true,
+    colorLive = '#0999e8',
+    colorDead = '#F01A30'
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
     window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
 var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame
 
 
-// may we don't need this
+
 // update size when change size of window
 addEventListener('resize', () => {
-    canvas.width = document.getElementById('e3').offsetWidth
-    canvas.height = document.getElementById('e3').offsetHeight
-    //init()
+    document.getElementById('container').style.height = $(window).innerHeight().toString() + 'px';
+    canvas.width = document.getElementById('Game').clientWidth
+    canvas.height = document.getElementById('Game').clientHeight
 })
-// check if key is same any letter on scaner for delete
+
+// check if key is same  any letter in screen
 addEventListener('keydown', function (event) {
-    // console.log(event)
     let check = false
     for (let i in letters) {
-        if (event.key == letters[i].letter) {
-            letters[i].colorCircle = '#F01A30'
+        if (event.key == letters[i].letter && letters[i].show) {
+            letters[i].colorCircle = colorDead // dead letter when catch
             check = true
         }
     }
+    // if the compressed key is not inside screen 
     if (!check) CounterError++
 
 })
-// Implementation
-
+let go=false
+// function initialization the game
 function init() {
+    // set height for container whole page and onle specify page
+    document.getElementById('container').style.height = $(window).innerHeight().toString() + 'px';
+    // initialization letters as array
     letters = []
     // call animaltion letter
-    animate()
+    processGame()
+$(window).blur(function() {
+ // stop create letter
+       // clearInterval(createLetter)
+        // stop redraw gaem space
+        cancelAnimationFrame(step);
+go=true;
+});
+$(window).focus(function() {
+if(go)
+    {requestAnimationFrame(processGame);go=false}
+});
 
 }
 // Animation Loop , this animation letter by update fun of letters
-function animate() {
+function processGame() {
     // clear canvas for new draw,when update coordinate letters or not show some letters
     canvasDraw.clearRect(0, 0, canvas.width, canvas.height)
-    if (numberletters == MaxNumberLetter) { //win
+    if (Counterletters == MaxNumberLetter) { //win
         clearInterval(createLetter)
         win = true
         // check if create all letters and all letters caught
         letters.forEach((letter) => {
-            if (letter.show && letter.colorCircle == '#00A5FF') win = false
+            if (letter.show && letter.colorCircle == colorLive || letter.time < 25) win = false
         })
         if (win) {
-            canvasDraw.font = '40px arial'
+            canvasDraw.font = `${(canvas.height+canvas.width)/30}px arial`
             canvasDraw.textAlign = 'center'
             canvasDraw.fillStyle = 'black'
             canvasDraw.fillText('you have won in our Game', canvas.width / 2, canvas.height / 2)
+            // stop create letter
+            clearInterval(createLetter)
+            // stop redraw game space
             cancelAnimationFrame(step)
             return 0
         }
     }
-
-    if (CounterLeft == 5) { // check if five letters arrive to canvas's left wihtout catching them
-        canvasDraw.font = '40px arial'
+    // check if five letters arrive to canvas's left wihtout catching them
+    if (CounterLeft >= 5) {
+        // write lose phrase 
+        canvasDraw.font = `${(canvas.height+canvas.width)/30}px arial`
         canvasDraw.textAlign = 'center'
         canvasDraw.fillStyle = 'black'
         canvasDraw.fillText('good luck in the future', canvas.width / 2, canvas.height / 2)
-        cancelAnimationFrame(step)
+        // stop create letter and delete it 
         clearInterval(createLetter)
-    } else {
-        //else coutinue with Game
+        // stop redraw gaem space
+        cancelAnimationFrame(step)
+    }
+    //else coutinue with Game
+    else {
+        // update radius letters for change size screen ,.....
+        let radius = (canvas.height + canvas.width) / 60
+        // press in letters
         letters.forEach(letter => {
-            // check if letter arrive to scanner left
-            if (letter.show // letter include canvas
-                &&
-                letter.colorCircle == '#00A5FF' // not catch
-                &&
-                letter.x - letter.radius < 0 //arrive left 
-            ) {
-                CounterLeft++
-                letter.show = false
-            }
-
             //update or  catch one of letters , start it big then not show 
             if (letter.show) {
-                if (letter.colorCircle == '#F01A30')
-                    letter.old++, letter.radius += 0.5
-                if (letter.old == 25)
+                // check if letter arrive to scanner left
+                if (letter.show // letter is live and it without caught 
+                    &&
+                    letter.colorCircle == colorLive // not catch
+                    &&
+                    letter.x - letter.radius < 0 //arrive left 
+                ) {
+                    CounterLeft++ // increase counter
+                    letter.show = false//hide the letter
+                }
+                // process when letter dead
+                if (letter.colorCircle == colorDead) {
+                    letter.time++//change time to death
+                }
+
+                if (letter.time == 25) // it's time to death
                     letter.show = false
-                else
-                    letter.update()
+                else // except update the letter -it's maybe live or about to die- ,and  press radius for chang size
+                    letter.update(radius)
             }
         })
     }
+    // counter error and counter are update in screen 
     document.getElementById('Countererror').innerHTML = CounterError
     document.getElementById('Counterleft').innerHTML = 5 - CounterLeft
-    step = requestAnimationFrame(animate)
+    // call function is responsible for call processGame 60 times per second
+    step = requestAnimationFrame(processGame)
 }
+
+let timeS
 // create letter each 1 second
 var createLetter = setInterval(() => {
     // creater properties for new letter
     let velocity = {
-            x: -(Math.abs((Math.random() - 0.5) * speed)),
-            y: (Math.random() - 0.5) * 5
-        } //for speed letter
-        ,
-        radius = 30,
-        x = canvas.width + 10,
-        y = randomIntFromRange(radius, canvas.height - radius),
-        // indexColor = randomIndex(colors),
-        indexChar = randomIndex(chars),
-        ychar = idxy[indexChar]
-    numberletters++
-    letters.push(new Letter(0, true, velocity, x, y, radius, '#00A5FF', chars[indexChar], x, y + ychar, '#FCFFF5'))
+            x: -speed,
+            y: (Math.random() - 0.5) * 3
+        }// specify speed letter in game space
+        ,radius = (canvas.height + canvas.width) / 60
+        ,x = canvas.width + 10
+        ,y = randomIntFromRange(radius, canvas.height - radius)
+        ,indexChar = randomIndex(chars)
+        ,yI = IY[indexChar]
+        ,xD = DX[indexChar],
+        time=0,
+        show=true
+    letters.push(new Letter(time, show, velocity, x, y, radius, colorLive, chars[indexChar], x - xD, y + yI, 'white'))
+    // increase counter letters
+    Counterletters++
+    
     // increase speed for next letter
-    if (speed < 15)
+    /*if (speed < 15)
         speed += devspeed
     else { //speed arrive 15 so decrease devspeed
         devspeed = 0.1
-    }
+    }*/
 }, 1000)
 //  call initialization function
 init()
+
