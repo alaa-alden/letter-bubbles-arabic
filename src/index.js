@@ -8,6 +8,7 @@ import {
     canvas,
     canvasDraw
 } from './config/canvas'
+import IntervalTimer from './class/IntervalTimer'
 let
     chars = ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي', 'ا', 'إ', 'آ', 'ؤ', 'ئ', 'ء'],
     IY = [25, 15, 15, 15, 5, 5, 8, 15, 20, 8, 10, 12, 15, 10, 10, 20, 20, 8, 10, 20, 12, 18, 17, 5, 10, 15, 8, 8, 15, 15, 20, 8, 10, 10],
@@ -59,14 +60,14 @@ function init() {
     processGame()
 $(window).blur(function() {
  // stop create letter
-       // clearInterval(createLetter)
+	setTimeout(createLetter.pause(),0)
         // stop redraw gaem space
-        cancelAnimationFrame(step);
+        cancelAnimationFrame(step)
 go=true;
 });
 $(window).focus(function() {
 if(go)
-    {requestAnimationFrame(processGame);go=false}
+    {requestAnimationFrame(processGame);setTimeout(createLetter.resume(),0);go=false}
 });
 
 }
@@ -101,7 +102,7 @@ function processGame() {
         canvasDraw.fillStyle = 'black'
         canvasDraw.fillText('good luck in the future', canvas.width / 2, canvas.height / 2)
         // stop create letter and delete it 
-        clearInterval(createLetter)
+	setTimeout(createLetter.pause(),0)
         // stop redraw gaem space
         cancelAnimationFrame(step)
     }
@@ -144,7 +145,7 @@ function processGame() {
 
 let timeS
 // create letter each 1 second
-var createLetter = setInterval(() => {
+var createLetter = new IntervalTimer(() => {
     // creater properties for new letter
     let velocity = {
             x: -speed,
@@ -171,4 +172,4 @@ var createLetter = setInterval(() => {
 }, 1000)
 //  call initialization function
 init()
-
+  
