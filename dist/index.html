@@ -3,86 +3,13 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Canvas Template</title>
+	<title>Typing Game</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" />
-	<style>
-		/* work with grid css*/
-
-		body {
-			color: white;
-			font: 'Nunito Semibold';
-			text-align: center
-		}
-
-		#container {
-			background-color: #404040;
-			width: 100%;
-			height: 100%;
-			display: grid;
-			grid-template-rows: 1fr 4fr 20fr 1.15fr;
-			grid-template-columns: 1fr 4fr 4fr 1fr;
-			grid-gap: 10px;
-		}
-
-		/* for first item*/
-
-		#e1 {
-			grid-row: 2/2;
-			grid-column: 2/2;
-			/* for own its grid */
-			display: grid;
-			grid-template-rows: 1fr 1fr;
-			grid-template-columns: 1fr;
-		}
-
-		#e1 #word {
-			margin: 2px 2px;
-			grid-row: 1/1;
-			grid-column: 1/1;
-		}
-
-		#e1 #Countererror {
-			margin: 2px 2px;
-			border: 1px solid #fff;
-			grid-row: 2/2;
-			grid-column: 1/1;
-		}
-
-		/* for second item*/
-
-		#e2 {
-			grid-row: 2/2;
-			grid-column: 3/3;
-			/* for own its grid */
-			display: grid;
-			grid-template-rows: 1fr 1fr;
-			grid-template-columns: 1fr;
-		}
-
-		#e2 #word {
-			margin: 2px 2px;
-			grid-row: 1/1;
-			grid-column: 1/1;
-		}
-
-		#e2 #Counterleft {
-			margin: 2px 2px;
-			border: 1px solid #fff;
-			grid-row: 2/2;
-			grid-column: 1/1;
-		}
-
-		/* third item*/
-
-		#e3 {
-			grid-row: 3/3;
-			grid-column: 2/4;
-		}
-
-		#e3 canvas {
-			background-color: #FFFFFF
-		}
-	</style>
+	<link/ rel='stylesheet' href='style/index.css'></link>
+		<!-- <style>
+		@import 'style/index.css';
+	</style> -->
 </head>
 
 <body>
@@ -96,9 +23,18 @@
 			<h2 id='Counterleft'>5</h2>
 		</div>
 		<div id='e3'>
-			<canvas></canvas>
+			<div id='Game'>
+				<canvas></canvas>
+			</div>
+			<div id='footer'>
+				<p>
+					<p></p>
+				</p>
+			</div>
 		</div>
 	</div>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	    crossorigin="anonymous"></script>
 	<script src="js/canvas.bundle.js"></script>
 </body>
 

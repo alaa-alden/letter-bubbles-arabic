@@ -1,0 +1,10 @@
+     @media screen and (min-height:760px) {
+        #container {
+            background-color: #404040;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-rows: 1fr 4fr 40fr 1fr;
+            grid-template-columns: 0.5fr 5fr 5fr 0.5fr;
+        }
+    } 
