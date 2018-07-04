@@ -1,7 +1,9 @@
 /* eslint no-console:0 */
 import {
     randomIntFromRange,
-    randomIndex
+    randomIndex,
+    distance,
+
 } from './function'
 import Letter from './class/letter'
 import {
@@ -49,7 +51,7 @@ addEventListener('keydown', function (event) {
     if (!check) CounterError++
 
 })
-let go=false
+let go = false
 // function initialization the game
 function init() {
     // set height for container whole page and onle specify page
@@ -58,18 +60,20 @@ function init() {
     letters = []
     // call animaltion letter
     processGame()
-$(window).blur(function() {
- // stop create letter
-	setTimeout(createLetter.pause(),0)
+    window.onblur = function () {
+        // stop create letter
+        createLetter.pause()
         // stop redraw gaem space
         cancelAnimationFrame(step)
-go=true;
-});
-$(window).focus(function() {
-if(go)
-    {requestAnimationFrame(processGame);setTimeout(createLetter.resume(),0);go=false}
-});
-
+        go = true;
+    }
+}
+window.onfocus = () => {
+    if (go) {
+        requestAnimationFrame(processGame)
+        createLetter.resume()
+        go = false
+    }
 }
 // Animation Loop , this animation letter by update fun of letters
 function processGame() {
@@ -83,12 +87,12 @@ function processGame() {
             if (letter.show && letter.colorCircle == colorLive || letter.time < 25) win = false
         })
         if (win) {
-            canvasDraw.font = `${(canvas.height+canvas.width)/30}px arial`
+            canvasDraw.font = `${(canvas.height + canvas.width) / 30}px arial`
             canvasDraw.textAlign = 'center'
             canvasDraw.fillStyle = 'black'
             canvasDraw.fillText('you have won in our Game', canvas.width / 2, canvas.height / 2)
             // stop create letter
-            clearInterval(createLetter)
+            createLetter.pause()
             // stop redraw game space
             cancelAnimationFrame(step)
             return 0
@@ -97,12 +101,12 @@ function processGame() {
     // check if five letters arrive to canvas's left wihtout catching them
     if (CounterLeft >= 5) {
         // write lose phrase 
-        canvasDraw.font = `${(canvas.height+canvas.width)/30}px arial`
+        canvasDraw.font = `${(canvas.height + canvas.width) / 30}px arial`
         canvasDraw.textAlign = 'center'
         canvasDraw.fillStyle = 'black'
         canvasDraw.fillText('good luck in the future', canvas.width / 2, canvas.height / 2)
-        // stop create letter and delete it 
-	setTimeout(createLetter.pause(),0)
+        // stop create letter 
+        createLetter.pause()
         // stop redraw gaem space
         cancelAnimationFrame(step)
     }
@@ -142,27 +146,35 @@ function processGame() {
     // call function is responsible for call processGame 60 times per second
     step = requestAnimationFrame(processGame)
 }
-
-let timeS
+let createLetterPerSecond = 1
 // create letter each 1 second
 var createLetter = new IntervalTimer(() => {
-    // creater properties for new letter
-    let velocity = {
+    let EndLetter = Counterletters//for not check whole letters if they are same y-coordinate , only new letters and they have same x-coordinate 
+    for (let i = 0; i < createLetterPerSecond; i++) {
+        // creater properties for new letter
+        let velocity = {
             x: -speed,
             y: (Math.random() - 0.5) * 3
         }// specify speed letter in game space
-        ,radius = (canvas.height + canvas.width) / 60
-        ,x = canvas.width + 10
-        ,y = randomIntFromRange(radius, canvas.height - radius)
-        ,indexChar = randomIndex(chars)
-        ,yI = IY[indexChar]
-        ,xD = DX[indexChar],
-        time=0,
-        show=true
-    letters.push(new Letter(time, show, velocity, x, y, radius, colorLive, chars[indexChar], x - xD, y + yI, 'white'))
-    // increase counter letters
-    Counterletters++
-    
+            , radius = (canvas.height + canvas.width) / 60
+            , x = randomIntFromRange(canvas.width + 10, canvas.width + 100)
+            , y = randomIntFromRange(radius, canvas.height - radius)
+            , indexChar = randomIndex(chars)
+            , yI = IY[indexChar]
+            , xD = DX[indexChar],
+            time = 0,
+            show = true
+        // check if any letter of array and new letter are same place for y-coordinate //fix j 
+        for (let j = EndLetter; j < letters.length; j++) {
+            if (distance(x, y, letters[j].x, letters[j].y) - radius * 2 < 0) {
+                y = randomIntFromRange(radius, canvas.height - radius),
+                    j = -1 // for back to start loop when update
+            }
+        }
+        letters.push(new Letter(time, show, velocity, x, y, radius, colorLive, chars[indexChar], x - xD, y + yI, 'white'))
+        // increase counter letters
+        Counterletters++
+    }
     // increase speed for next letter
     /*if (speed < 15)
         speed += devspeed
@@ -172,4 +184,26 @@ var createLetter = new IntervalTimer(() => {
 }, 1000)
 //  call initialization function
 init()
-  
+
+let checkIndex = 0
+let mode = 0
+let checkResult = new IntervalTimer(() => {
+    let counter = 0
+    for (let i = checkIndex; i < letters.length; i++) {
+        if (letters[i].show == false && letters[i].colorCircle == colorDead) counter++
+        if (mode < 3 && counter == 15) {
+            speed += 0.002
+            mode += 1
+            checkIndex = i + 1
+            console.log(speed)
+            break
+        }
+        else if (mode ==3 && counter == 45) {
+            mode = 0
+            createLetterPerSecond += 1
+            checkIndex = i + 1
+            console.log(createLetterPerSecond)
+            break
+        }
+    }
+}, 1000)
